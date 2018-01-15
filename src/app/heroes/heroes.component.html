@@ -8,22 +8,12 @@
 
 </ul>
 
-
-<div *ngIf = "selectedHero">
-
-	<h2>{{ selectedHero.name | uppercase }} Details</h2>
-
-	<div><span>id: </span>{{ selectedHero.id }}</div>
-
-	<div>
-		<label>name:
-			<input [(ngModel)] = "selectedHero.name" placeholder = "name" >
-		</label>
-	</div>
-
-</div>
-
-
+<!-- One-way data binding. 
+	[hero] = "selectHero" is an Angular Property Binding. 
+	'hero' is the property of the target element. The target
+	element is <app-hero-detail> which is the selector name for
+	the HeroDetailComponent.  -->
+<app-hero-detail [hero] = "selectedHero" ></app-hero-detail>
 
 
 <!--

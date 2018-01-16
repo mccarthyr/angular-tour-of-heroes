@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Hero }       from './hero';
-import { HEROES }     from './mock-heroes';
-import { Observable } from 'rxjs/Observable';
-import { of }         from 'rxjs/observable/of';
-
+import { Injectable }     from '@angular/core';
+import { Hero }           from './hero';
+import { HEROES }         from './mock-heroes';
+import { Observable }     from 'rxjs/Observable';
+import { of }             from 'rxjs/observable/of';
+import { MessageService } from './message.service';
 
 /*
  The @Injectable decorator tells Angular that this service might itself
@@ -17,7 +17,7 @@ import { of }         from 'rxjs/observable/of';
 @Injectable()
 export class HeroService {
 
-  constructor() { }
+  constructor( private messageService: MessageService ) { }
 
   /*
   getHeroes(): Hero[] {
@@ -26,6 +26,9 @@ export class HeroService {
   */
 
   getHeroes(): Observable<Hero[]> {
+
+  	// Sending a message via the MessageService when a hero is fetched.
+  	this.messageService.add( 'HeroService: fetched heroes' );
   	return of(HEROES);
   }
 

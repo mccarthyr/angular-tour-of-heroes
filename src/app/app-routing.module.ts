@@ -1,11 +1,20 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HeroesComponent }      from './heroes/heroes.component';
+
+
+const routes: Routes = [ 
+  { path: 'heroes', component: HeroesComponent } 
+];
+
+
 @NgModule({
+  imports: [ RouterModule.forRoot( routes ) ],	
   exports: [ RouterModule ]
 })
 
-export class AppRoutingModule { }
+export class AppRoutingModule {}
 
 
 
@@ -16,5 +25,9 @@ export class AppRoutingModule { }
 
  Exporting RouterModule makes router directives available for
  use in the AppModule components that will need them.
- */
  
+ A typical Angular Route has two properties:
+ - path: a string that matches the URL in the browser
+ - component: the component that the router should create
+
+ */

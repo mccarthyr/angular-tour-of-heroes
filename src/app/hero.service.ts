@@ -32,11 +32,20 @@ export class HeroService {
   	return of(HEROES);
   }
 
+  getHero( id: number ): Observable<Hero> {
+
+  	/* 
+  	 Note: Use of backticks below that define a Javascript Template Literal
+  	       for embedding the id.
+  	 */
+    this.messageService.add( `HeroService: fetched hero id=${id}` );
+    return of( HEROES.find( hero => hero.id === id ) );
+  }
+
   /*
    of(HEROES) returns an Observable<Hero[]> that emits a single value, the
    array of mock heroes.
    */
-
 
 }
 

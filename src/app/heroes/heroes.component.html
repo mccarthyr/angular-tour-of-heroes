@@ -2,19 +2,32 @@
 
 <ul class = "heroes">
 
+	<li *ngFor = "let hero of heroes">
+		<a routerLink = "/detail/{{ hero.id }}">
+			<span class = "badge">{{ hero.id }}</span> {{ hero.name }}
+		</a>
+	</li>
+
+</ul>
+
+<!--
+<ul class = "heroes">
+
 	<li *ngFor = "let hero of heroes" [class.selected] = "hero == selectedHero" (click) = "onSelect( hero )" >
 		<span class = "badge">{{ hero.id }}</span> {{ hero.name }}
 	</li>
 
 </ul>
+-->
 
 <!-- One-way data binding. 
 	[hero] = "selectHero" is an Angular Property Binding. 
 	'hero' is the property of the target element. The target
 	element is <app-hero-detail> which is the selector name for
 	the HeroDetailComponent.  -->
+<!--
 <app-hero-detail [hero] = "selectedHero" ></app-hero-detail>
-
+-->
 
 <!--
 <h2>{{ hero.name | uppercase }} Details</h2>

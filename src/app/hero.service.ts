@@ -1,9 +1,11 @@
-import { Injectable }     from '@angular/core';
-import { Hero }           from './hero';
-import { HEROES }         from './mock-heroes';
-import { Observable }     from 'rxjs/Observable';
-import { of }             from 'rxjs/observable/of';
-import { MessageService } from './message.service';
+import { Injectable }              from '@angular/core';
+import { Hero }                    from './hero';
+import { HEROES }                  from './mock-heroes';
+import { Observable }              from 'rxjs/Observable';
+import { of }                      from 'rxjs/observable/of';
+import { MessageService }          from './message.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 
 /*
  The @Injectable decorator tells Angular that this service might itself
@@ -17,7 +19,16 @@ import { MessageService } from './message.service';
 @Injectable()
 export class HeroService {
 
-  constructor( private messageService: MessageService ) { }
+  /* In the simulated server in-memory-data.service file 'heroes' is the name 
+     of the array that is returned. To access anything in the simulated server 
+     use api/<name_of_return_value> 
+   */
+  private heroesUrl = 'api/heroes';
+
+
+  constructor( 
+    private http: HttpClient,
+    private messageService: MessageService ) { }
 
   /*
   getHeroes(): Hero[] {
@@ -25,12 +36,19 @@ export class HeroService {
   }
   */
 
+  /*
   getHeroes(): Observable<Hero[]> {
-
   	// Sending a message via the MessageService when a hero is fetched.
   	this.messageService.add( 'HeroService: fetched heroes' );
   	return of(HEROES);
   }
+  */
+
+  // GET heroes from the server.
+  getHeroes() : Observable<Hero[]> {
+    return this.http.get<Hero[]>( this.heroesUrl );
+  }
+
 
   getHero( id: number ): Observable<Hero> {
 
@@ -42,13 +60,20 @@ export class HeroService {
     return of( HEROES.find( hero => hero.id === id ) );
   }
 
-  /*
-   of(HEROES) returns an Observable<Hero[]> that emits a single value, the
-   array of mock heroes.
-   */
+
+  /* Log a HeroService message with the MessageService  */
+  private log( message: string ) {
+    this.messageService.add( 'HeroService: ' + message );
+  }
+
 
 }
 
+
+/*
+   of(HEROES) returns an Observable<Hero[]> that emits a single value, the
+   array of mock heroes.
+ */
 
 /*
  HeroService.getHeroes() MUST have an asynchronous signature of some kind, currently it is synchronous.

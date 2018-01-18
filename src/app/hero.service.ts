@@ -5,7 +5,7 @@ import { Observable }              from 'rxjs/Observable';
 import { of }                      from 'rxjs/observable/of';
 import { MessageService }          from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { catchError, map, tap }    from 'rxjs/operators';
 
 /*
  The @Injectable decorator tells Angular that this service might itself
@@ -14,8 +14,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
  before Angular can inject it into the HeroesComponent. It is done in
  the AppModule for this project, it could be provided in the other components.
 */
-
-
 @Injectable()
 export class HeroService {
 
@@ -44,24 +42,66 @@ export class HeroService {
   }
   */
 
-  // GET heroes from the server.
+  /**
+   * GET heroes from the server. Tap looks at Observable values, does something 
+   * with them and passes them along.
+   */
   getHeroes() : Observable<Hero[]> {
-    return this.http.get<Hero[]>( this.heroesUrl );
+
+    return this.http.get<Hero[]>( this.heroesUrl ).pipe(
+
+      tap( heroes => this.log( `fetched heroes` ) ),
+      catchError( this.handleError( 'getHeroes', [] ) 
+    ) );
   }
 
 
-  getHero( id: number ): Observable<Hero> {
+  /**
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result    - optional value to return as the observable result
+   */
+  private handleError<T>( operation = 'operation', result?: T ) {
 
-  	/* 
-  	 Note: Use of backticks below that define a Javascript Template Literal
-  	       for embedding the id.
-  	 */
+    return ( error: any ): Observable<T> => {
+
+      console.log( error );
+      this.log( `${operation} failed: ${error.message}` );
+      
+      // Let the app keep running by returning an empty result
+      return of( result as T );
+    }
+  }
+
+  /*
+  getHero( id: number ): Observable<Hero> {    
+  	// Note: Use of backticks below that define a Javascript Template Literal
+  	//       for embedding the id.
+  
     this.messageService.add( `HeroService: fetched hero id=${id}` );
     return of( HEROES.find( hero => hero.id === id ) );
   }
+  */
+
+  /**
+   * GET hero by ID. Will 404 if ID not found.
+   */
+  getHero( id: number ): Observable<Hero> {
+
+    const url = `${this.heroesUrl}/${id}`;
+    return this.http.get<Hero>( url ).pipe(
+      tap( _ => this.log( `fetched hero id=${id}` ) ),
+      catchError( this.handleError<Hero>( `getHero id=${id}` ) )
+      );
+
+  }
 
 
-  /* Log a HeroService message with the MessageService  */
+
+  /**
+   * Log a HeroService message with the MessageService  
+   */
   private log( message: string ) {
     this.messageService.add( 'HeroService: ' + message );
   }
@@ -70,9 +110,15 @@ export class HeroService {
 }
 
 
+
 /*
    of(HEROES) returns an Observable<Hero[]> that emits a single value, the
    array of mock heroes.
+ */
+
+/*
+ To catch errors, you "pipe" the Observable result from http.get() through
+ an RxJS catchError() operator.
  */
 
 /*

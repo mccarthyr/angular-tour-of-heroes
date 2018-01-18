@@ -77,7 +77,7 @@ export class HeroService {
   getHero( id: number ): Observable<Hero> {
 
     const url = `${this.heroesUrl}/${id}`;
-    return this.http.get<Hero>( url ).pipe(
+    return this.http.get<Hero>( url ).pipe(      
       tap( _ => this.log( `fetched hero id=${id}` ) ),
       catchError( this.handleError<Hero>( `getHero id=${id}` ) )
       );
@@ -94,6 +94,19 @@ export class HeroService {
       catchError( this.handleError<any>( 'updateHero' ) )
       );
   }
+
+
+  /**
+   * POST: Add a new hero to the server.
+   */
+  addHero( hero: Hero ): Observable<Hero> {
+
+    return this.http.post<Hero>( this.heroesUrl, hero, httpOptions ).pipe(
+      tap( ( hero: Hero ) => this.log( `added hero with id=${hero.id}` ) ),
+      catchError( this.handleError<Hero>( 'addHero' ) )
+      );
+  }
+
 
 
   /**

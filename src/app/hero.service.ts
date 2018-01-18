@@ -14,6 +14,12 @@ import { catchError, map, tap }    from 'rxjs/operators';
  before Angular can inject it into the HeroesComponent. It is done in
  the AppModule for this project, it could be provided in the other components.
 */
+
+const httpOptions = {
+  headers: new HttpHeaders( { 'Content-Type': 'application/json' } )
+};
+
+
 @Injectable()
 export class HeroService {
 
@@ -56,6 +62,40 @@ export class HeroService {
   }
 
 
+  /*
+  getHero( id: number ): Observable<Hero> {    
+  	// Note: Use of backticks below that define a Javascript Template Literal
+  	//       for embedding the id.
+    this.messageService.add( `HeroService: fetched hero id=${id}` );
+    return of( HEROES.find( hero => hero.id === id ) );
+  }
+  */
+
+  /**
+   * GET hero by ID. Will 404 if ID not found.
+   */
+  getHero( id: number ): Observable<Hero> {
+
+    const url = `${this.heroesUrl}/${id}`;
+    return this.http.get<Hero>( url ).pipe(
+      tap( _ => this.log( `fetched hero id=${id}` ) ),
+      catchError( this.handleError<Hero>( `getHero id=${id}` ) )
+      );
+  }
+
+
+  /**
+   * PUT: Update the hero on the server.
+   */
+  updateHero( hero: Hero ): Observable<any> {
+
+    return this.http.put( this.heroesUrl, hero, httpOptions ).pipe(
+      tap( _ => this.log( `updated hero id=${hero.id}` ) ),
+      catchError( this.handleError<any>( 'updateHero' ) )
+      );
+  }
+
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -73,30 +113,6 @@ export class HeroService {
       return of( result as T );
     }
   }
-
-  /*
-  getHero( id: number ): Observable<Hero> {    
-  	// Note: Use of backticks below that define a Javascript Template Literal
-  	//       for embedding the id.
-  
-    this.messageService.add( `HeroService: fetched hero id=${id}` );
-    return of( HEROES.find( hero => hero.id === id ) );
-  }
-  */
-
-  /**
-   * GET hero by ID. Will 404 if ID not found.
-   */
-  getHero( id: number ): Observable<Hero> {
-
-    const url = `${this.heroesUrl}/${id}`;
-    return this.http.get<Hero>( url ).pipe(
-      tap( _ => this.log( `fetched hero id=${id}` ) ),
-      catchError( this.handleError<Hero>( `getHero id=${id}` ) )
-      );
-
-  }
-
 
 
   /**

@@ -36,7 +36,13 @@ export class HeroDetailComponent implements OnInit {
   	this.location.back();
   }
 
+  save(): void {
+    this.heroService.updateHero( this.hero ).subscribe( () => this.goBack() );
+  }
+
+
 }
+
 
 /*
  The 'route.snapshot' is a static image of the route information
